@@ -26,7 +26,7 @@
     props:{
       titles:{
         type:Array,
-        default(){
+        default(){ //默认值是一个对象或者数组时，default加函数
           return []
         }
       }
