@@ -6,6 +6,7 @@
       <detail-base-info :goods="goods" />
       <detail-shop-info :shop="shop" />
       <detail-goods-info :detailInfo="detailInfo" @imgLoad="imgLoad" />
+      <detail-param-info :paramInfo="paramInfo"  />
     </scroll>
   </div>
 </template>
@@ -17,6 +18,7 @@ import DetailSwiper from './childComps/DetailSwiper.vue'
 import DetailBaseInfo from './childComps/DetailBaseInfo.vue'
 import DetailShopInfo from './childComps/DetailShopInfo.vue'
 import DetailGoodsInfo from './childComps/DetailGoodsInfo.vue'
+import DetailParamInfo from './childComps/DetailParamInfo.vue'
 
 import Scroll from 'components/common/scroll/Scroll.vue'
   export default {
@@ -27,6 +29,7 @@ import Scroll from 'components/common/scroll/Scroll.vue'
       DetailBaseInfo,
       DetailShopInfo,
       DetailGoodsInfo,
+      DetailParamInfo,
 
       Scroll
     },
@@ -60,7 +63,7 @@ import Scroll from 'components/common/scroll/Scroll.vue'
         this.detailInfo = data.detailInfo
 
         //5.获取参数信息
-        this.paramInfo = new GoodsParam(data.itemParams.info,data.itemParams.rule)
+        this.paramInfo = new GoodsParam(data.itemParams.info, data.itemParams.rule)
       })
     },
     methods:{
