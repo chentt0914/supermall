@@ -27,10 +27,9 @@ import NavBar from 'components/common/navbar/NavBar.vue';
 import TabControl from 'components/content/tabControl/TabControl.vue';
 import GoodList from '@/components/content/goods/GoodList.vue';
 import Scroll from '@/components/common/scroll/Scroll.vue';
-import BackTop from '@/components/content/backTop/BackTop.vue';
 
 import { getHomeMultidata, getHomeGoods } from 'network/home';
-import { debounce } from 'common/utils';
+import { itemListenerMixin, backTopMixin } from 'common/mixin'
 
 export default {
   name: "Home",
@@ -41,9 +40,9 @@ export default {
     FeatureView,
     TabControl,
     GoodList,
-    Scroll,
-    BackTop
+    Scroll
   },
+  mixins: [itemListenerMixin, backTopMixin],
   data(){
     return{
       currentType:'pop',
@@ -54,7 +53,6 @@ export default {
         'new':{page:0,list:[]},
         'sell':{page:0,list:[]}
       },
-      isShowBackTop:false,
       tabOffsetTop:0,
       isTabFixed:false,
       saveY:0
@@ -63,14 +61,19 @@ export default {
   computed:{
     showGoods(){
       return this.goods[this.currentType].list
-    },
-    activated() {
-      this.$refs.scroll.scrollTo(0,this.saveY,0)
-      this.$refs.scroll.refresh()
-    },
-    deactivated() {
-      this.saveY = this.$refs.scroll.getScrollY()
-    },
+    }
+  },
+  deactivated() {
+    //保存y值
+    this.saveY = this.$refs.scroll.getScrollY()
+
+    //取消全局事件的监听
+    this.$bus.$off('itemImgLoad', this.itemImgListener)
+  },
+  activated() {
+    console.log(this.saveY);
+    this.$refs.scroll.scrollTo(0, this.saveY, 1)
+    this.$refs.scroll.refresh()
   },
   created(){
     //1.请求多个数据
@@ -83,11 +86,7 @@ export default {
   },
   mounted(){
     //监听item中图片加载完成
-   const refresh = debounce(this.$refs.scroll.refresh,50)
-    this.$bus.$on('itemImageLoad', () => {
-      refresh()
-      // console.log('---');
-    })
+    //对函数进行防抖操作
   },
   methods:{
     // 事件监听相关的方法
@@ -106,9 +105,6 @@ export default {
       this.$refs.tabControl1.currentIndex = index;
       this.$refs.tabControl2.currentIndex = index;
 
-    },
-    backClick(){
-      this.$refs.scroll.scrollTo(0,0)
     },
     contentScroll(position){
       //1.判断BackTop是否显示

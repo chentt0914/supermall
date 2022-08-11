@@ -1,9 +1,9 @@
 <template>
   <div class="goods">
     <good-list-item
-      v-for="item in goods"
+      v-for="(item,index) in goods"
       :goodsItem="item"
-      :key="item.show.img">
+      :key="index">
       </good-list-item>
   </div>
 </template>
